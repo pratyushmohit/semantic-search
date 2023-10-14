@@ -1,23 +1,15 @@
-FROM nvidia/cuda:12.2.0-runtime-ubuntu20.04
-
-# Set non-interactive environment variable to prevent prompts
-ENV DEBIAN_FRONTEND=noninteractive
+# Build stage
+FROM python:3.11-slim
 
 RUN apt-get update && \
   apt-get -y upgrade && \
-  apt-get install -y bash 
-
-# Install Python 3.9 and pip
-RUN apt-get install -y bash python3.9 python3-pip
-
-# Set Python 3.9 as the default Python version
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
+  apt-get install -y bash && \
+  apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /usr/src/app
 
 # Install dependencies
 COPY . ./
-RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 EXPOSE 8000
