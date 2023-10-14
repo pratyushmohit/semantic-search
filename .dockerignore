@@ -91,6 +91,7 @@ venv/
 
 data/
 tests/
+Postman Collections/
 
 Makefile
 LICENSE
