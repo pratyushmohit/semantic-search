@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  semantic-search:
+    image: semantic-search:latest
+    ports:
+      - "8000:8000" 
+    environment:
+      - QDRANT_HOST=qdrant
+    depends_on:
+      - qdrant
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - ./data/qdrant_storage:/qdrant/storage
