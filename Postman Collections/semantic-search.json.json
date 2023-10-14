@@ -1,0 +1,78 @@
+{
+	"info": {
+		"_postman_id": "ce5782c2-6caa-4b1d-bd3d-831432ec850c",
+		"name": "semantic-search",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "status",
+			"id": "978111ed-62ac-4b5a-9ddb-a88a98ca6e84",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8000/status"
+			},
+			"response": []
+		},
+		{
+			"name": "upload-file",
+			"id": "6fae8697-6b5b-47f7-835b-033d1617e3d7",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/praty/Downloads/test_vdb.csv"
+						}
+					]
+				},
+				"url": "http://localhost:8000/upload-file"
+			},
+			"response": []
+		},
+		{
+			"name": "find-similar",
+			"id": "27672a25-5bb1-46a1-8926-90b02a6f0871",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/find-similar?sentence=This is Hyderabad&limit=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"find-similar"
+					],
+					"query": [
+						{
+							"key": "sentence",
+							"value": "This is Hyderabad"
+						},
+						{
+							"key": "limit",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
