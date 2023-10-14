@@ -2,7 +2,6 @@ import json
 from io import StringIO
 
 import pandas as pd
-import uvicorn
 from fastapi import File, Request, Response, UploadFile
 
 from semantic_search.embedding_gen import SentenceEncoder
@@ -60,7 +59,3 @@ def find_similar(request: Request):
     output = vector_database.find_similar(request)
     output = json.dumps({"output": output},  indent=4, default=dict)
     return Response(content=output, media_type="application/json")
-
-
-if __name__=="__main__":
-    uvicorn.run("semantic_search.main:app", host="0.0.0.0", port=8000, reload=True)
