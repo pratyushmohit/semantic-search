@@ -9,6 +9,9 @@ install:
 fastapi-endpoint-local:
 	python -m uvicorn semantic_search.main:app --reload --host=0.0.0.0 --port=8000
 
+build:
+	docker-compose build
+
 build-fastapi:
 	docker build -t semantic-search -f docker\fastapi\Dockerfile .
 
