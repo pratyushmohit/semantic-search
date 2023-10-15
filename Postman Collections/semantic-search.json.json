@@ -42,6 +42,19 @@
 			"response": []
 		},
 		{
+			"name": "check-status",
+			"id": "b5edab41-53e6-4c72-b390-9990305ac160",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8000/check-status/be038ffe-7524-47fa-a6cd-cc736f35c250"
+			},
+			"response": []
+		},
+		{
 			"name": "find-similar",
 			"id": "27672a25-5bb1-46a1-8926-90b02a6f0871",
 			"protocolProfileBehavior": {
@@ -71,19 +84,6 @@
 						}
 					]
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "check-status",
-			"id": "b5edab41-53e6-4c72-b390-9990305ac160",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://localhost:8000/check-status"
 			},
 			"response": []
 		}
