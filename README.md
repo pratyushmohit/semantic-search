@@ -1,6 +1,6 @@
 # Semantic Search: FastAPI, Celery, Redis and Qdrant
 
-This repository contains a FastAPI-based web application that enables semantic search using a Qdrant Vector Database. It uses Celery workers with a Redis broker to handle background tasks i.e, generating embedding and upserting to vector database. The application provides endpoints for uploading text data, generating embeddings, getting status of the upload and finding similar sentences.
+A FastAPI-based web application that enables semantic search using a Qdrant Vector Database. It uses Celery workers with a Redis broker to handle background tasks i.e, generating embedding and upserting to vector database. The application provides endpoints for uploading text data, generating embeddings, getting status of the upload and finding similar sentences.
 
 This repository provides a Docker Compose configuration for setting up a semantic search application with multiple services. The application consists of the following components:
 
