@@ -2,12 +2,21 @@ import json
 from io import StringIO
 
 import pandas as pd
+from celery import Celery
 from fastapi import File, Request, Response, UploadFile
 
 from semantic_search.embedding_gen import SentenceEncoder
 from semantic_search.vector_database import QdrantVectorDatabase
 
 from . import app
+
+celery = Celery(__name__, broker='amqp://guest:guest@rabbitmq:5672//', backend='rpc://')
+
+# Use RabbitMQ as the backend
+celery.conf.update(
+    result_backend='rpc://',
+    result_persistent=True,
+)
 
 COLLECTION_NAME = "test"
 
@@ -18,9 +27,8 @@ def status():
     return Response(content=output, media_type="application/json")
 
 
-@app.post("/upload-file")
-def upload_file(file: UploadFile = File(...)):
-    contents = file.file.read()
+@celery.task
+def generate_embeddings_and_upsert(contents):
     s = str(contents, 'utf-8')
     data = StringIO(s)
     df = pd.read_csv(data, sep=",", low_memory=False)
@@ -40,8 +48,30 @@ def upload_file(file: UploadFile = File(...)):
     if result["message"] == "Upsert successful":
         output = json.dumps(
             {"messaage": "Generated embeddings. Upsert Successful!"}, indent=4, default=str)
+    return output
+
+
+@app.post("/upload-file")
+def upload_file(file: UploadFile = File(...)):
+    contents = file.file.read()
+    result = generate_embeddings_and_upsert.delay(contents)
+    output = json.dumps({"messaage": "Process job created. Please check status in sometime!",
+                        "task_id": result.id}, indent=4, default=str)
 
     return Response(content=output, media_type="application/json")
+
+@app.get("/check-status/{task_id}")
+async def check_status(task_id: str):
+    result = generate_embeddings_and_upsert.AsyncResult(task_id, app=celery)
+
+    if result.ready():
+        if result.successful():
+            result_data = result.result
+            return {"status": "completed", "result": result_data}
+        else:
+            return {"status": "failed", "result": None}
+    else:
+        return {"status": "pending", "result": None}
 
 
 @app.get("/find-similar")

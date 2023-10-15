@@ -3,11 +3,29 @@ version: '3'
 services:
   semantic-search:
     image: semantic-search:latest
+    build:
+      context: .
+      dockerfile: docker/fastapi/Dockerfile-fastapi
     ports:
       - "8000:8000" 
     environment:
       - QDRANT_HOST=qdrant
     depends_on:
+      - qdrant
+      - celery-worker
+      - rabbitmq
+
+  celery-worker:
+    image: celery-worker:latest
+    build:
+      context: .
+      dockerfile: docker/celery/Dockerfile-celery
+    command: ["celery", "-A", "semantic_search.app.celery", "worker", "--loglevel=info"]
+    environment:
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - QDRANT_HOST=qdrant
+    depends_on:
+      - rabbitmq
       - qdrant
 
   qdrant:
@@ -16,3 +34,14 @@ services:
       - "6333:6333"
     volumes:
       - ./data/qdrant_storage:/qdrant/storage
+
+  rabbitmq:
+    image: "rabbitmq:latest"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
