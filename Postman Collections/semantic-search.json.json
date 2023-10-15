@@ -73,6 +73,19 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "check-status",
+			"id": "b5edab41-53e6-4c72-b390-9990305ac160",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8000/check-status"
+			},
+			"response": []
 		}
 	]
 }
