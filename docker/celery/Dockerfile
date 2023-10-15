@@ -32,4 +32,4 @@ ENV PATH="/venv/bin:$PATH"
 COPY . ./
 
 # Start the Celery worker
-CMD ["celery", "-A", "worker", "worker", "--loglevel=info"]
+CMD ["celery", "-A", "semantic_search.app.celery", "worker", "--loglevel=info"]

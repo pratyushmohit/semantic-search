@@ -1,3 +1,4 @@
+import ast
 import json
 from io import StringIO
 
@@ -10,17 +11,20 @@ from semantic_search.vector_database import QdrantVectorDatabase
 
 from . import app
 
-celery = Celery(__name__, broker='amqp://guest:guest@rabbitmq:5672//', backend='rpc://')
+celery = Celery(__name__, broker='redis://redis:6379/0',
+                backend='redis://redis:6379/0')
 
-# Use RabbitMQ as the backend
+# Use Redis as the backend
 celery.conf.update(
-    result_backend='rpc://',
+    result_backend='redis://redis:6379/0',
     result_persistent=True,
 )
 
 COLLECTION_NAME = "test"
 
 # ---- ENDPOINTS ----
+
+
 @app.get("/status")
 def status():
     output = json.dumps({"status": "Running"}, indent=4, default=str)
@@ -47,7 +51,7 @@ def generate_embeddings_and_upsert(contents):
 
     if result["message"] == "Upsert successful":
         output = json.dumps(
-            {"messaage": "Generated embeddings. Upsert Successful!"}, indent=4, default=str)
+            {"message": "Generated embeddings. Upsert Successful!"}, indent=4, default=str)
     return output
 
 
@@ -55,10 +59,11 @@ def generate_embeddings_and_upsert(contents):
 def upload_file(file: UploadFile = File(...)):
     contents = file.file.read()
     result = generate_embeddings_and_upsert.delay(contents)
-    output = json.dumps({"messaage": "Process job created. Please check status in sometime!",
+    output = json.dumps({"message": "Process job created. Please check status in sometime!",
                         "task_id": result.id}, indent=4, default=str)
 
     return Response(content=output, media_type="application/json")
+
 
 @app.get("/check-status/{task_id}")
 async def check_status(task_id: str):
@@ -67,6 +72,7 @@ async def check_status(task_id: str):
     if result.ready():
         if result.successful():
             result_data = result.result
+            result_data = ast.literal_eval(result_data)
             return {"status": "completed", "result": result_data}
         else:
             return {"status": "failed", "result": None}

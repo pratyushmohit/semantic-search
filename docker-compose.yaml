@@ -13,7 +13,7 @@ services:
     depends_on:
       - qdrant
       - celery-worker
-      - rabbitmq
+      - redis
 
   celery-worker:
     image: celery-worker:latest
@@ -22,10 +22,10 @@ services:
       dockerfile: docker/celery/Dockerfile-celery
     command: ["celery", "-A", "semantic_search.app.celery", "worker", "--loglevel=info"]
     environment:
-      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - CELERY_BROKER_URL=redis://redis:6379/0
       - QDRANT_HOST=qdrant
     depends_on:
-      - rabbitmq
+      - redis
       - qdrant
 
   qdrant:
@@ -35,13 +35,7 @@ services:
     volumes:
       - ./data/qdrant_storage:/qdrant/storage
 
-  rabbitmq:
-    image: "rabbitmq:latest"
+  redis:
+    image: redis:latest
     ports:
-      - "5672:5672"
-      - "15672:15672"
-    volumes:
-      - ./data/rabbitmq:/var/lib/rabbitmq
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+      - "6379:6379"
