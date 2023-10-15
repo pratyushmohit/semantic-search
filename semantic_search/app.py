@@ -36,17 +36,18 @@ def generate_embeddings_and_upsert(contents):
     s = str(contents, 'utf-8')
     data = StringIO(s)
     df = pd.read_csv(data, sep=",", low_memory=False)
-    df = df["review_text"]
+    arr = df["sentence"]
 
     encoder = SentenceEncoder()
-    embeddings = encoder.encode(df.tolist())
+    embeddings = encoder.encode(arr.tolist())
     embeddings = pd.DataFrame(embeddings)
 
     vector_database = QdrantVectorDatabase()
     vector_database.create_collection(
         collection_name=COLLECTION_NAME, embed_size=embeddings.shape[1])
     upsert_request = {"collection_name": COLLECTION_NAME,
-                      "embeddings": embeddings}
+                      "embeddings": embeddings,
+                      "metadata": df}
     result = vector_database.upsert(upsert_request)
 
     if result["message"] == "Upsert successful":

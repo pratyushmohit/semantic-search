@@ -37,11 +37,11 @@ class QdrantVectorDatabase:
             request = request.dict()
         collection_name = request["collection_name"]
         embeddings = request["embeddings"]
-        # metadata = request["metadata"]
+        metadata = request["metadata"]
 
         client.upsert(collection_name=collection_name,
                       points=models.Batch(ids=list(embeddings.index),
-                                          # payloads=metadata.to_dict("records"),
+                                          payloads=metadata.to_dict("records"),
                                           vectors=embeddings.values.tolist())
                       )
 

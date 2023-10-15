@@ -5,7 +5,7 @@ services:
     image: semantic-search:latest
     build:
       context: .
-      dockerfile: docker/fastapi/Dockerfile-fastapi
+      dockerfile: docker/fastapi/Dockerfile
     ports:
       - "8000:8000" 
     environment:
@@ -19,7 +19,7 @@ services:
     image: celery-worker:latest
     build:
       context: .
-      dockerfile: docker/celery/Dockerfile-celery
+      dockerfile: docker/celery/Dockerfile
     command: ["celery", "-A", "semantic_search.app.celery", "worker", "--loglevel=info"]
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
