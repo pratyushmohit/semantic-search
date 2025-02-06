@@ -22,5 +22,3 @@ This repository provides a Docker Compose configuration for setting up a semanti
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
-Feel free to customize this README to include additional information, contact details, and license terms as needed for your project.
